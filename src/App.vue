@@ -1,30 +1,50 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+import { ref, reactive } from 'vue'
+import Header from "./components/Header.vue"
+import Form from "./components/Form.vue"
+import Patient from "./components/Patient.vue"
+
+const patients = ref([])
+
+const patient = reactive({
+  petName: '',
+  ownerName: '',
+  ownerEmail: '',
+  dischargeDate: '',
+  petSymptoms: ''
+
+})
+
+const savePatient = () => {
+  patients.value.push(patient)
+}
+
 </script>
 
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
-</template>
+  <div class="container mx-auto mt-20">
+    <Header />
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
+    <div class="mt-12 md:flex">
+
+      <Form v-model:petName="patient.petName" v-model:ownerName="patient.ownerName"
+        v-model:ownerEmail="patient.ownerEmail" v-model:dischargeDate="patient.dischargeDate"
+        v-model:petSymptoms="patient.petSymptoms" @save-patient="savePatient" />
+
+      <div class="md:w-1/2 md:h-screen overflow-y-scroll">
+        <h3 class="font-black text-3xl text-center">
+          Administra tus pacientes
+        </h3>
+        <div v-if="patients.length > 0" class="">
+          <p class="text-lg mt-5 text-center mb-10">
+            Información de
+            <span class="text-indigo-600 font-bold">Pacientes</span>
+          </p>
+          <Patient v-for="patient in patients" :patient="patient" />
+        </div>
+        <p v-else class="mt-20 text-2xl text-center">No Hay Pacientes</p>
+      </div>
+
+    </div>
+  </div>
+</template>
